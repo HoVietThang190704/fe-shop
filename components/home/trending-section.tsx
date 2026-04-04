@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Star, Heart, Maximize2 } from "lucide-react";
 import { HOME_CONTENT } from "@/lib/constants/home-content";
 import { ProductService } from "@/service/product.service";
@@ -28,7 +29,11 @@ export async function TrendingSection() {
       {/* Products Grid */}
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
         {products.map((product) => (
-          <div key={product._id} className="group relative flex flex-col space-y-5">
+          <Link 
+            key={product._id} 
+            href={`/product/${product.slug}`}
+            className="group relative flex flex-col space-y-5"
+          >
             {/* Product Image */}
             <div className="relative aspect-[3/4] overflow-hidden rounded-3xl bg-muted/20 shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 group-hover:scale-[1.02]">
               <Image
@@ -93,7 +98,7 @@ export async function TrendingSection() {
                 <div className="h-3 w-3 rounded-full bg-stone-500" />
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

@@ -49,4 +49,23 @@ export class ProductService {
       };
     }
   }
+
+  async getProductBySlug(slug: string): Promise<BaseResponse<Product>> {
+    try {
+      const url = new UrlBuilder().addPath(Endpoint.PRODUCTS).addParam("detail").addParam(slug);
+      const response = await fetch(url.build(), {
+        next: { revalidate: 3600 } 
+      });
+      if (!response.ok) {
+         throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(`Error fetching product by slug ${slug}:`, error);
+      return { 
+        message: "Failed to fetch product by slug", 
+        success: false 
+      };
+    }
+  }
 }

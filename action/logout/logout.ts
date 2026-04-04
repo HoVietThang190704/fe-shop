@@ -1,6 +1,7 @@
 "use server";
 
-import { TokenManager, tokenType } from "@/lib/token";
+import { TokenManager } from "@/lib/token-server";
+import { tokenType } from "@/lib/token";
 import { redirect } from "next/navigation";
 
 export async function logout() {
