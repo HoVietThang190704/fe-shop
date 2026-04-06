@@ -12,16 +12,18 @@ export default function PaymentReturnPage() {
   const { refreshCart } = useCart();
   const [status, setStatus] = useState<"loading" | "success" | "failed">("loading");
   const [message, setMessage] = useState("");
-  const [orderDetails, setOrderDetails] = useState<any>(null);
+  const [earnedPoints, setEarnedPoints] = useState<number>(0);
 
   useEffect(() => {
     const verify = async () => {
       // 1. COD: redirect thủ công với query ?success=true&orderId=xxx
       const isDirectSuccess = searchParams.get("success") === "true";
       const orderId = searchParams.get("orderId");
+      const pointsFromQuery = Number(searchParams.get("earnedPoints") || 0);
 
       if (isDirectSuccess && orderId) {
         setStatus("success");
+        setEarnedPoints(Number.isNaN(pointsFromQuery) ? 0 : pointsFromQuery);
         setMessage("Your order has been placed successfully. Thank you for shopping with us!");
         return;
       }
@@ -35,6 +37,8 @@ export default function PaymentReturnPage() {
         if (response.success) {
           await refreshCart(); // Đồng bộ lại giỏ hàng trên UI
           setStatus("success");
+          const apiPoints = Number(response.earnedPoints ?? response.data?.earnedPoints ?? 0);
+          setEarnedPoints(Number.isNaN(apiPoints) ? 0 : apiPoints);
           setMessage("Payment via MoMo successful! Your order is being processed.");
         } else {
           setStatus("failed");
@@ -71,6 +75,11 @@ export default function PaymentReturnPage() {
             <p className="text-sm text-zinc-500 dark:text-zinc-400 font-serif italic mb-10 px-4 leading-relaxed">
               {message}
             </p>
+            {earnedPoints > 0 && (
+              <p className="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-8">
+                Reward points earned: {earnedPoints.toLocaleString("vi-VN")}
+              </p>
+            )}
             <div className="flex flex-col gap-3 w-full">
               <Link
                 href="/products"

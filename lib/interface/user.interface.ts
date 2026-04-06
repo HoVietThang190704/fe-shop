@@ -2,15 +2,19 @@ export interface User {
   _id?: string; 
   username: string;
   email: string;
-  fullName: string;
-  name: string;
-  rule: string;
+  fullName?: string;
+  name?: string;
+  role?: string;
+  rule?: string;
   avatar_url?: string;
-  isActive: boolean;
-  created: {
+  avatarUrl?: string;
+  isActive?: boolean;
+  status?: boolean;
+  rewardPoints?: number;
+  created?: {
     time: Date;
   };
-  modified: {
+  modified?: {
     time: Date;
   };
 }

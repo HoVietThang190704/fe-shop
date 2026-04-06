@@ -4,14 +4,20 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { CreditCard, Truck, MapPin, Phone, User, CheckCircle2, Loader2, Wallet } from "lucide-react";
 import { OrderInput, OrderService } from "@/service/order.service";
+import { RewardService } from "@/service/reward.service";
 import { useCart } from "@/provider/CartProvider";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/provider/AuthProvider";
 
 export default function CheckoutForm() {
-  const { cartItems, cartTotal, refreshCart } = useCart();
+  const { cartItems, refreshCart } = useCart();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetchingReward, setIsFetchingReward] = useState(false);
+  const [availablePoints, setAvailablePoints] = useState<number | null>(null);
+  const [appliedVoucherCode, setAppliedVoucherCode] = useState<string>("");
   const router = useRouter();
 
   const {
@@ -23,10 +29,28 @@ export default function CheckoutForm() {
   } = useForm<OrderInput>({
     defaultValues: {
       paymentMethod: 'COD',
+      discountCode: '',
     }
   });
 
   const selectedPayment = watch("paymentMethod");
+
+  const fetchRewardPoints = async () => {
+    setIsFetchingReward(true);
+    try {
+      const response = await RewardService.getInstance().getSummary();
+      if (response.success && response.data) {
+        setAvailablePoints(response.data.rewardPoints || 0);
+      }
+    } finally {
+      setIsFetchingReward(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (!user) return;
+    fetchRewardPoints();
+  }, [user]);
 
   const onSubmit = async (data: OrderInput) => {
     if (cartItems.length === 0) {
@@ -48,13 +72,22 @@ export default function CheckoutForm() {
         } else {
           // COD success
           await refreshCart();
-          router.push(`/payment-return?orderId=${response.data?.orderId}&success=true`);
+          const orderId = response.data?.orderId || response.orderId;
+          const earnedPoints = response.data?.earnedPoints ?? response.earnedPoints;
+          const query = new URLSearchParams({
+            orderId: orderId || '',
+            success: 'true',
+          });
+          if (typeof earnedPoints === 'number') {
+            query.set('earnedPoints', String(earnedPoints));
+          }
+          router.push(`/payment-return?${query.toString()}`);
         }
       } else {
         console.error("Order creation failed:", response);
         toast.error(response?.message || "Failed to place order");
       }
-    } catch (error) {
+    } catch {
       toast.error("An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
@@ -172,6 +205,39 @@ export default function CheckoutForm() {
               <p className="font-bold text-sm uppercase tracking-widest">MoMo Wallet</p>
               <p className="text-[10px] text-zinc-500 font-medium italic">Pay via MoMo e-wallet</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-900 dark:text-zinc-100">
+            <Wallet size={20} strokeWidth={1.5} />
+          </div>
+          <h2 className="text-xl font-bold uppercase tracking-tight italic">Voucher</h2>
+        </div>
+
+        <div className="space-y-3">
+          <input
+            {...register("discountCode")}
+            value={appliedVoucherCode}
+            onChange={(e) => {
+              setAppliedVoucherCode(e.target.value.toUpperCase());
+              setValue("discountCode", e.target.value.toUpperCase());
+            }}
+            className="w-full h-14 px-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 rounded-2xl text-sm transition-all focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 outline-none"
+            placeholder="Enter voucher code (optional)"
+          />
+          <div className="text-[11px] font-medium text-zinc-500 flex items-center justify-between">
+            <span>Your reward points: {availablePoints === null ? "..." : availablePoints.toLocaleString("vi-VN")}</span>
+            <button
+              type="button"
+              onClick={fetchRewardPoints}
+              disabled={isFetchingReward}
+              className="underline underline-offset-2 disabled:opacity-50"
+            >
+              {isFetchingReward ? "Refreshing..." : "Refresh"}
+            </button>
           </div>
         </div>
       </section>
