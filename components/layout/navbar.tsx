@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import MyProfilePage from "@/app/(public)/myprofile/page";
 
 interface NavbarProps {
   transparent?: boolean;
@@ -113,7 +114,7 @@ export function Navbar({ transparent = false }: NavbarProps) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-border/40 my-1" />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem className="flex h-10 items-center rounded-xl px-4 text-sm font-medium transition-colors hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground cursor-pointer">
+                  <DropdownMenuItem onClick={() => router.push("/myprofile")} className="flex h-10 items-center rounded-xl px-4 text-sm font-medium transition-colors hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground cursor-pointer">
                     Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex h-10 items-center rounded-xl px-4 text-sm font-medium transition-colors hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground cursor-pointer">
