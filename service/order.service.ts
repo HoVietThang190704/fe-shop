@@ -57,6 +57,7 @@ export class OrderService {
       const response = await fetch(url, {
         method: "POST",
         headers,
+        credentials: "include",
         body: JSON.stringify(orderData),
       });
       return await response.json();
@@ -74,7 +75,7 @@ export class OrderService {
     try {
       const url = `${new UrlBuilder().addPath(Endpoint.ORDERS || '/api/v1/orders').build()}/momo-return?${queryParams}`;
       const headers = await this.getAuthHeaders();
-      const response = await fetch(url, { method: "GET", headers });
+      const response = await fetch(url, { method: "GET", headers, credentials: "include" });
       return await response.json();
     } catch (error) {
       console.error("Error confirming MoMo payment:", error);
@@ -89,6 +90,7 @@ export class OrderService {
       const response = await fetch(url, {
         method: "GET",
         headers,
+        credentials: "include",
       });
       return await response.json();
     } catch (error) {
