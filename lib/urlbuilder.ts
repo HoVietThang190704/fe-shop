@@ -1,10 +1,9 @@
 import { EndpointKey } from "./shared/constants/endpoint";
 
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
-const url = typeof window !== "undefined" ? "" : serverUrl;
 
 export class UrlBuilder {
-  private url: string = url;
+  private url: string = serverUrl;
 
   addPath(path: EndpointKey): this {
     this.url += path;
