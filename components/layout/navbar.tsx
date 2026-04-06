@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { HOME_CONTENT } from "@/lib/constants/home-content";
 import { useAuth } from "@/provider/AuthProvider";
 import { useCart } from "@/provider/CartProvider";
+import { useFavorites } from "@/provider/FavoriteProvider";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +26,7 @@ interface NavbarProps {
 export function Navbar({ transparent = false }: NavbarProps) {
   const { user, logout } = useAuth();
   const { cartCount } = useCart();
+  const { favoriteCount } = useFavorites();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -82,8 +84,17 @@ export function Navbar({ transparent = false }: NavbarProps) {
           <button className="transition-colors hover:text-primary/70">
             <Search className="h-5 w-5" />
           </button>
-          <button className="transition-colors hover:text-primary/70">
+          <button
+            onClick={() => router.push("/favorites")}
+            className="relative transition-colors hover:text-primary/70 cursor-pointer p-1"
+            aria-label="Open favorites"
+          >
             <Heart className="h-5 w-5" />
+            {favoriteCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground font-bold animate-in zoom-in duration-300">
+                {favoriteCount}
+              </span>
+            )}
           </button>
 
           {user ? (

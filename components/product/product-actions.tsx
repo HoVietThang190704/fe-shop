@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { ShoppingBag, Heart, Share2 } from "lucide-react";
+import { ShoppingBag, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/provider/CartProvider";
 import { useAuth } from "@/provider/AuthProvider";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { FavoriteToggleButton } from "@/components/favorites/favorite-toggle-button";
 
 interface ProductActionsProps {
   productId: string;
@@ -54,9 +55,11 @@ export function ProductActions({ productId, productName }: ProductActionsProps) 
           <ShoppingBag className="mr-2 h-4 w-4" />
           {loading ? "Adding..." : "Add to Cart"}
         </Button>
-        <Button variant="outline" className="h-14 w-14 rounded-full border-border/60 hover:bg-muted/30 transition-all active:scale-90">
-          <Heart className="h-5 w-5" />
-        </Button>
+        <FavoriteToggleButton
+          productId={productId}
+          productName={productName}
+          className="h-14 w-14 rounded-full border-border/60 hover:bg-muted/30"
+        />
         <Button variant="outline" className="h-14 w-14 rounded-full border-border/60 hover:bg-muted/30 transition-all active:scale-90">
           <Share2 className="h-5 w-5" />
         </Button>
