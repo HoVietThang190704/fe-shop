@@ -19,8 +19,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import MyProfilePage from "@/app/(public)/myprofile/page";
+import { NotificationDropdown } from "@/components/notifications/NotificationDropdown";
 
 interface NavbarProps {
+
   transparent?: boolean;
 }
 
@@ -98,7 +100,10 @@ export function Navbar({ transparent = false }: NavbarProps) {
             )}
           </button>
 
+          {user && <NotificationDropdown />}
+
           {user ? (
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="transition-colors hover:text-primary/70 outline-none">

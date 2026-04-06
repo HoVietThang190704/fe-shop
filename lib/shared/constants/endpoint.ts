@@ -8,8 +8,9 @@ export const Endpoint = {
     ORDERS: '/api/v1/orders',
     REWARDS: '/api/v1/rewards',
     MESSAGES: '/api/v1/messages',
-    USERS: '/api/v1/users',
+    // USERS: '/api/v1/users',
     COMMENTS: '/api/v1/comments',
+    NOTIFICATIONS: '/api/v1/notifications',
 } as const;
 
 export type EndpointKey = (typeof Endpoint)[keyof typeof Endpoint];
