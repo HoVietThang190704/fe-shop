@@ -34,6 +34,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased `}
+        suppressHydrationWarning
       >
         <Providers initialUser={initialUser}>
           {children}
