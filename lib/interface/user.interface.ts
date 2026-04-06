@@ -7,11 +7,19 @@ export interface User {
   _id?: string; 
   username: string;
   email: string;
-  fullName: string;
+  fullName?: string;
+  name?: string;
+  role?: string;
+  rule?: string;
+  avatar_url?: string;
   avatarUrl?: string;
-  role?: Role;
   isActive?: boolean;
   status?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  rewardPoints?: number;
+  created?: {
+    time: Date;
+  };
+  modified?: {
+    time: Date;
+  };
 }
