@@ -3,14 +3,13 @@
 import { ShoppingBag, ChevronRight } from "lucide-react";
 import { useCart } from "@/provider/CartProvider";
 import { useMemo } from "react";
+import Link from "next/link";
 
 export default function CartSummary() {
   const { cartTotal, cartItems } = useCart();
 
-  // Simple mock for shipping and tax for now
-  const shipping = useMemo(() => (cartTotal > 0 ? 30000 : 0), [cartTotal]);
   const tax = useMemo(() => cartTotal * 0.1, [cartTotal]);
-  const total = useMemo(() => cartTotal + shipping + tax, [cartTotal, shipping, tax]);
+  const total = useMemo(() => cartTotal + tax, [cartTotal, tax]);
 
   if (cartItems.length === 0) return null;
 
@@ -26,15 +25,6 @@ export default function CartSummary() {
           <span className="text-zinc-500 font-medium">Subtotal</span>
           <span className="font-semibold tabular-nums">
             {cartTotal.toLocaleString("vi-VN")}
-            <span className="text-[10px] ml-0.5 font-normal tracking-tight">₫</span>
-          </span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-zinc-500 font-medium whitespace-nowrap">
-            Shipping <span className="text-[10px] uppercase font-bold tracking-widest bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded ml-1">Standard</span>
-          </span>
-          <span className="font-semibold tabular-nums">
-            {shipping.toLocaleString("vi-VN")}
             <span className="text-[10px] ml-0.5 font-normal tracking-tight">₫</span>
           </span>
         </div>
@@ -55,10 +45,13 @@ export default function CartSummary() {
         </div>
       </div>
 
-      <button className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-zinc-100 dark:text-zinc-900 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2 group shadow-lg shadow-zinc-200 dark:shadow-none">
+      <Link 
+        href="/checkout"
+        className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-zinc-100 dark:text-zinc-900 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2 group shadow-lg shadow-zinc-200 dark:shadow-none"
+      >
         Proceed to Checkout
         <ChevronRight size={16} strokeWidth={2} className="group-hover:translate-x-1 transition-transform" />
-      </button>
+      </Link>
 
       <div className="mt-6 flex items-center justify-center gap-4 border-t border-zinc-50 dark:border-zinc-900 pt-6 opacity-30 grayscale hover:opacity-80 transition-opacity">
         <div className="w-8 h-5 bg-zinc-200 dark:bg-zinc-800 rounded-sm" />
