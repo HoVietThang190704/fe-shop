@@ -3,7 +3,10 @@
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { AuthProvider } from "./AuthProvider";
+import { CartProvider } from "./CartProvider";
+import { FavoriteProvider } from "./FavoriteProvider";
 import { User } from "@/lib/interface/user.interface";
+import { Toaster } from "@/components/ui/sonner";
 
 export function Providers({ 
   children,
@@ -19,7 +22,12 @@ export function Providers({
       enableSystem={false}
     >
       <AuthProvider initialUser={initialUser}>
-        {children}
+        <FavoriteProvider>
+          <CartProvider>
+            {children}
+            <Toaster position="top-center" richColors />
+          </CartProvider>
+        </FavoriteProvider>
       </AuthProvider>
     </NextThemesProvider>
   );

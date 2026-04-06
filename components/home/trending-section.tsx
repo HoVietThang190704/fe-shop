@@ -1,15 +1,24 @@
 import React from "react";
 import Image from "next/image";
-import { Star, Heart, Maximize2 } from "lucide-react";
+import Link from "next/link";
+import { Star, Maximize2 } from "lucide-react";
 import { HOME_CONTENT } from "@/lib/constants/home-content";
 import { ProductService } from "@/service/product.service";
+import { FavoriteToggleButton } from "@/components/favorites/favorite-toggle-button";
+import { Product } from "@/lib/interface/product.interface";
+
+type DisplayProduct = Product & {
+  isNew?: boolean;
+  isSale?: boolean;
+};
 
 export async function TrendingSection() {
   const { title } = HOME_CONTENT.trending;
   const productService = ProductService.getInstance();
   const response = await productService.getProducts();
   
-  const products = response.success && response.data ? response.data.slice(0, 4) : [];
+  const products: DisplayProduct[] =
+    response.success && response.data ? response.data.slice(0, 4) : [];
 
   if (products.length === 0) {
     return null; // Or show a fallback
@@ -28,7 +37,11 @@ export async function TrendingSection() {
       {/* Products Grid */}
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
         {products.map((product) => (
-          <div key={product._id} className="group relative flex flex-col space-y-5">
+          <Link 
+            key={product._id} 
+            href={`/product/${product.slug}`}
+            className="group relative flex flex-col space-y-5"
+          >
             {/* Product Image */}
             <div className="relative aspect-[3/4] overflow-hidden rounded-3xl bg-muted/20 shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 group-hover:scale-[1.02]">
               <Image
@@ -41,12 +54,12 @@ export async function TrendingSection() {
               {/* Badges */}
               <div className="absolute left-4 top-4 flex flex-col space-y-2">
                 {/* Mocking badges for now as they are not in the database */}
-                {(product as any).isNew && (
+                {product.isNew && (
                   <span className="rounded-full bg-primary/95 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary-foreground shadow-lg backdrop-blur-sm">
                     New
                   </span>
                 )}
-                {(product as any).isSale && (
+                {product.isSale && (
                   <span className="rounded-full bg-destructive/95 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-destructive-foreground shadow-lg backdrop-blur-sm">
                     Sale
                   </span>
@@ -59,9 +72,11 @@ export async function TrendingSection() {
                   Add to Cart
                 </button>
                 <div className="flex space-x-2">
-                  <button className="flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-black shadow-xl backdrop-blur-md transition-all hover:bg-primary hover:text-white active:scale-95">
-                    <Heart className="h-4 w-4" />
-                  </button>
+                  <FavoriteToggleButton
+                    productId={product._id}
+                    productName={product.title}
+                    className="h-11 w-11 rounded-full bg-white/95 text-black shadow-xl backdrop-blur-md hover:bg-primary hover:text-white"
+                  />
                   <button className="flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-black shadow-xl backdrop-blur-md transition-all hover:bg-primary hover:text-white active:scale-95">
                     <Maximize2 className="h-4 w-4" />
                   </button>
@@ -81,7 +96,7 @@ export async function TrendingSection() {
               </div>
               <div className="flex items-center space-x-3">
                  <span className="text-lg font-bold tracking-tighter text-foreground">${product.price}</span>
-                 {(product as any).isSale && (
+                  {product.isSale && (
                     <span className="text-sm font-medium text-muted-foreground line-through opacity-60">${product.price + 50}</span>
                  )}
               </div>
@@ -93,7 +108,7 @@ export async function TrendingSection() {
                 <div className="h-3 w-3 rounded-full bg-stone-500" />
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

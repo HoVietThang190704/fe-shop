@@ -1,7 +1,8 @@
 "use server";
 
 import { AuthService } from "@/service/auth.service";
-import { TokenManager, tokenType } from "@/lib/token";
+import { TokenManager } from "@/lib/token-server";
+import { tokenType } from "@/lib/token";
 import { redirect } from "next/navigation";
 
 export async function login(formData: FormData) {

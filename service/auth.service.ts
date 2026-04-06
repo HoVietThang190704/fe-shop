@@ -58,8 +58,8 @@ export class AuthService {
         const token =
           typeof payload === "string"
             ? payload
-            : isRecord(payload) && typeof payload.token === "string"
-            ? payload.token
+            : isRecord(payload) && isRecord(payload.data) && typeof payload.data.token === "string"
+            ? payload.data.token
             : "";
         return {
           success: true,
