@@ -7,6 +7,7 @@ import { CartProvider } from "./CartProvider";
 import { FavoriteProvider } from "./FavoriteProvider";
 import { User } from "@/lib/interface/user.interface";
 import { Toaster } from "@/components/ui/sonner";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 
 export function Providers({ 
   children,
@@ -25,6 +26,7 @@ export function Providers({
         <FavoriteProvider>
           <CartProvider>
             {children}
+            <ChatWidget />
             <Toaster position="top-center" richColors />
           </CartProvider>
         </FavoriteProvider>

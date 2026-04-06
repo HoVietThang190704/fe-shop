@@ -40,11 +40,9 @@ export class OrderService {
       "Content-Type": "application/json",
     };
 
-    if (typeof window === "undefined") {
-      const token = await TokenManager.getToken(tokenType.ACCESS);
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
+    const token = await TokenManager.getToken(tokenType.ACCESS);
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     return headers;
@@ -60,10 +58,25 @@ export class OrderService {
         credentials: "include",
         body: JSON.stringify(orderData),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Order creation API error:", {
+          status: response.status,
+          statusText: response.statusText,
+          data: errorData
+        });
+        return { 
+          success: false, 
+          message: errorData.message || `Error ${response.status}: ${response.statusText}`,
+          ...errorData 
+        };
+      }
+
       return await response.json();
     } catch (error) {
       console.error("Error creating order:", error);
-      return { success: false, message: "Failed to create order" };
+      return { success: false, message: "Failed to create order due to network error" };
     }
   }
 

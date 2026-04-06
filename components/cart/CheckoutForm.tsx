@@ -84,11 +84,12 @@ export default function CheckoutForm() {
           router.push(`/payment-return?${query.toString()}`);
         }
       } else {
-        console.error("Order creation failed:", response);
-        toast.error(response?.message || "Failed to place order");
+        console.error("Order creation failed detailing:", response);
+        toast.error(response?.message || "Failed to place order. Check console for details.");
       }
-    } catch {
-      toast.error("An unexpected error occurred");
+    } catch (error) {
+      console.error("Unexpected error in CheckoutForm onSubmit:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
