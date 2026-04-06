@@ -41,6 +41,7 @@ export class CartService {
       const response = await fetch(url, {
         method: "GET",
         headers,
+        credentials: "include",
         cache: "no-store", // Ensure we get fresh cart data
       });
       return await response.json();
@@ -57,6 +58,7 @@ export class CartService {
       const response = await fetch(url, {
         method: "POST",
         headers,
+        credentials: "include",
         body: JSON.stringify({ product: productId }),
       });
       return await response.json();
@@ -73,6 +75,7 @@ export class CartService {
       const response = await fetch(url, {
         method: "POST",
         headers,
+        credentials: "include",
         body: JSON.stringify({ product: productId }),
       });
       return await response.json();
@@ -89,6 +92,7 @@ export class CartService {
       const response = await fetch(url, {
         method: "POST",
         headers,
+        credentials: "include",
         body: JSON.stringify({ product: productId }),
       });
       return await response.json();
@@ -108,6 +112,7 @@ export class CartService {
       const response = await fetch(url, {
         method: "POST",
         headers,
+        credentials: "include",
         body: JSON.stringify({ product: productId, quantity }),
       });
       return await response.json();
