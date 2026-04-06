@@ -1,16 +1,17 @@
+export interface Role {
+    _id: string;
+    name: string;
+}
+
 export interface User {
   _id?: string; 
   username: string;
   email: string;
   fullName: string;
-  name: string;
-  rule: string;
-  avatar_url?: string;
-  isActive: boolean;
-  created: {
-    time: Date;
-  };
-  modified: {
-    time: Date;
-  };
+  avatarUrl?: string;
+  role?: Role;
+  isActive?: boolean;
+  status?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }

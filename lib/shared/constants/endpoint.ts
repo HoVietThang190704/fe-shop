@@ -5,6 +5,7 @@ export const Endpoint = {
     CARTS: '/api/v1/carts',
     FAVORITES: '/api/v1/favorites',
     ORDERS: '/api/v1/orders',
+    USERS: '/api/v1/users',
 } as const;
 
 export type EndpointKey = (typeof Endpoint)[keyof typeof Endpoint];
