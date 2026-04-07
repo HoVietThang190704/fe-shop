@@ -18,8 +18,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import MyProfilePage from "@/app/(public)/myprofile/page";
+import { NotificationDropdown } from "@/components/notifications/NotificationDropdown";
 
 interface NavbarProps {
+
   transparent?: boolean;
 }
 
@@ -97,7 +100,10 @@ export function Navbar({ transparent = false }: NavbarProps) {
             )}
           </button>
 
+          {user && <NotificationDropdown />}
+
           {user ? (
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="transition-colors hover:text-primary/70 outline-none">
@@ -113,8 +119,14 @@ export function Navbar({ transparent = false }: NavbarProps) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-border/40 my-1" />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem className="flex h-10 items-center rounded-xl px-4 text-sm font-medium transition-colors hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground cursor-pointer">
-                    Profile
+                  <DropdownMenuItem
+                    onClick={() => router.push('/profile')}
+                    className="flex h-10 items-center justify-between rounded-xl px-4 text-sm font-medium transition-colors hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground cursor-pointer"
+                  >
+                    <span>Profile</span>
+                    <span className="text-[10px] font-bold tracking-widest text-muted-foreground">
+                      {(user.rewardPoints || 0).toLocaleString('vi-VN')} pts
+                    </span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex h-10 items-center rounded-xl px-4 text-sm font-medium transition-colors hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground cursor-pointer">
                     Settings

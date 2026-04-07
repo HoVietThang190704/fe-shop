@@ -14,6 +14,13 @@ export interface ShippingAddress {
 export interface OrderInput {
   shippingAddress: ShippingAddress;
   paymentMethod: 'COD' | 'MOMO';
+  discountCode?: string;
+}
+
+export interface CreateOrderResponse {
+  paymentUrl?: string;
+  orderId?: string;
+  earnedPoints?: number;
 }
 
 export class OrderService {
@@ -33,17 +40,15 @@ export class OrderService {
       "Content-Type": "application/json",
     };
 
-    if (typeof window === "undefined") {
-      const token = await TokenManager.getToken(tokenType.ACCESS);
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
+    const token = await TokenManager.getToken(tokenType.ACCESS);
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     return headers;
   }
 
-  async createOrder(orderData: OrderInput): Promise<BaseResponse<{ paymentUrl?: string; orderId: string }>> {
+  async createOrder(orderData: OrderInput): Promise<BaseResponse<CreateOrderResponse> & { orderId?: string; earnedPoints?: number }> {
     try {
       const url = new UrlBuilder().addPath(Endpoint.ORDERS || '/api/v1/orders').build();
       const headers = await this.getAuthHeaders();
@@ -53,10 +58,25 @@ export class OrderService {
         credentials: "include",
         body: JSON.stringify(orderData),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Order creation API error:", {
+          status: response.status,
+          statusText: response.statusText,
+          data: errorData
+        });
+        return { 
+          success: false, 
+          message: errorData.message || `Error ${response.status}: ${response.statusText}`,
+          ...errorData 
+        };
+      }
+
       return await response.json();
     } catch (error) {
       console.error("Error creating order:", error);
-      return { success: false, message: "Failed to create order" };
+      return { success: false, message: "Failed to create order due to network error" };
     }
   }
 
@@ -64,7 +84,7 @@ export class OrderService {
    * Gọi backend để xác nhận kết quả thanh toán MoMo sau khi redirect về.
    * Endpoint này sẽ xóa giỏ hàng và cập nhật trạng thái đơn hàng.
    */
-  async confirmMoMoReturn(queryParams: string): Promise<BaseResponse<{ orderId: string }>> {
+  async confirmMoMoReturn(queryParams: string): Promise<BaseResponse<{ orderId?: string; earnedPoints?: number }> & { earnedPoints?: number }> {
     try {
       const url = `${new UrlBuilder().addPath(Endpoint.ORDERS || '/api/v1/orders').build()}/momo-return?${queryParams}`;
       const headers = await this.getAuthHeaders();
@@ -76,7 +96,7 @@ export class OrderService {
     }
   }
 
-  async getOrders(): Promise<BaseResponse<any[]>> {
+  async getOrders(): Promise<BaseResponse<unknown[]>> {
     try {
       const url = new UrlBuilder().addPath(Endpoint.ORDERS || '/api/v1/orders').build();
       const headers = await this.getAuthHeaders();

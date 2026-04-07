@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ProductActions } from "@/components/product/product-actions";
+import { CommentsSectionClient } from "@/components/product/comments-section-client";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -142,6 +143,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
             </div>
           </div>
         </div>
+
+        {/* Comments Section */}
+        <CommentsSectionClient productId={product._id} />
       </main>
     </div>
   );
